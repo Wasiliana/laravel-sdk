@@ -1,0 +1,41 @@
+{
+    "name": "wasiliana/laravel-sdk",
+    "description": "This package is built to make it easier to interact with Wasiliana Api for Laravel developers.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Wasiliana Engineering Team",
+            "email": "engineering@wasiliana.com",
+            "homepage": "https://github.com/Wasiliana"
+        }
+    ],
+    "homepage": "https://github.com/wasiliana/laravel-sdk",
+    "keywords": ["Laravel", "LaravelSdk"],
+    "require": {
+        "illuminate/support": "~9"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~9.0",
+        "orchestra/testbench": "~7"
+    },
+    "autoload": {
+        "psr-4": {
+            "Wasiliana\\LaravelSdk\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Wasiliana\\LaravelSdk\\Tests\\": "tests"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Wasiliana\\LaravelSdk\\LaravelSdkServiceProvider"
+            ],
+            "aliases": {
+                "LaravelSdk": "Wasiliana\\LaravelSdk\\Facades\\LaravelSdk"
+            }
+        }
+    }
+}
