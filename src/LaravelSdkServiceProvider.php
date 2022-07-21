@@ -4,6 +4,7 @@ namespace Wasiliana\LaravelSdk;
 
 use GuzzleHttp\Client;
 use Illuminate\Support\ServiceProvider;
+use Wasiliana\LaravelSdk\Service\Sms;
 
 class LaravelSdkServiceProvider extends ServiceProvider
 {
@@ -32,19 +33,26 @@ class LaravelSdkServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->mergeConfigFrom(__DIR__.'/../config/laravel-sdk.php', 'laravel-sdk');
+        $this->mergeConfigFrom(__DIR__ . '/../config/laravel-sdk.php', 'laravel-sdk');
 
         // Register the service the package provides.
-        $this->app->singleton(LaravelSdk::class, function ($app) {
-            $config = config('laravel-sdk.api');
-            return new LaravelSdk(new Client([
-                'base_uri' => 'https://api.wasiliana.com/api/v1/developer/',
-                'headers' => [
-                    'apiKey' => $config['key'],
-                    'Accept' => 'application/json',
-                    'Content-Type' => 'application/json',
-                ]
-            ]));
+        // $this->app->singleton(LaravelSdk::class, function ($app) {
+        //     return new LaravelSdk(new Client([
+        //         'base_uri' => 'https://api.wasiliana.com/api/v1/developer/',
+        //         'headers' => [
+        //             'apiKey' => config('laravel-sdk.api.key'),
+        //             'Accept' => 'application/json',
+        //             'Content-Type' => 'application/json',
+        //         ]
+        //     ]));
+        // });
+
+        // $this->app->singleton(LaravelSdk::class, function ($app) {
+        //     return new LaravelSdk(new Client);
+        // });
+
+        $this->app->bind('ws_sms', function ($app) {
+            return new Sms();
         });
     }
 
@@ -67,7 +75,7 @@ class LaravelSdkServiceProvider extends ServiceProvider
     {
         // Publishing the configuration file.
         $this->publishes([
-            __DIR__.'/../config/laravel-sdk.php' => config_path('laravel-sdk.php'),
+            __DIR__ . '/../config/laravel-sdk.php' => config_path('laravel-sdk.php'),
         ], 'laravel-sdk.config');
 
         // Publishing the views.
