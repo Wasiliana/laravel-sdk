@@ -2,6 +2,7 @@
 
 namespace Wasiliana\LaravelSdk;
 
+use GuzzleHttp\Client;
 use Illuminate\Support\ServiceProvider;
 
 class LaravelSdkServiceProvider extends ServiceProvider
@@ -34,8 +35,16 @@ class LaravelSdkServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__.'/../config/laravel-sdk.php', 'laravel-sdk');
 
         // Register the service the package provides.
-        $this->app->singleton('laravel-sdk', function ($app) {
-            return new LaravelSdk;
+        $this->app->singleton(LaravelSdk::class, function ($app) {
+            $config = config('laravel-sdk.api');
+            return new LaravelSdk(new Client([
+                'base_uri' => 'https://api.wasiliana.com/api/v1/developer/',
+                'headers' => [
+                    'apiKey' => $config['key'],
+                    'Accept' => 'application/json',
+                    'Content-Type' => 'application/json',
+                ]
+            ]));
         });
     }
 
