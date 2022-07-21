@@ -13,6 +13,6 @@ class Sms extends Facade
      */
     protected static function getFacadeAccessor(): string
     {
-        return 'sms';
+        return 'ws_sms';
     }
 }
