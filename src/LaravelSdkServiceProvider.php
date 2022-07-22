@@ -33,7 +33,7 @@ class LaravelSdkServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/laravel-sdk.php', 'laravel-sdk');
+        $this->mergeConfigFrom(__DIR__ . '/../config/wasiliana.php', 'wasiliana');
 
         // Register the service the package provides.
         // $this->app->singleton(LaravelSdk::class, function ($app) {
@@ -75,7 +75,7 @@ class LaravelSdkServiceProvider extends ServiceProvider
     {
         // Publishing the configuration file.
         $this->publishes([
-            __DIR__ . '/../config/laravel-sdk.php' => config_path('laravel-sdk.php'),
+            __DIR__ . '/../config/wasiliana.php' => config_path('wasiliana.php'),
         ], 'wasiliana');
 
         // Publishing the views.
