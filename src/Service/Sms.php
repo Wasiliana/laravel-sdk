@@ -63,6 +63,8 @@ class Sms
 
     public function message($message)
     {
+        $this->message = $message;
+        return $this;
     }
 
     /**
@@ -74,17 +76,25 @@ class Sms
         return $this;
     }
 
-    public function send($recipients = null, $message =null,  $prefix = null)
+    public function send($recipients = null, $message = null,  $prefix = null)
     {
         if ($recipients != null) {
-            $data = $this->recipients($recipients);
+            $contacts = $this->recipients($recipients);
         } else {
-            $data = $this->recipients;
+            $contacts = $this->recipients;
         }
 
-        if ($data  == null) return 'Invalid recipients data.';
+        if ($contacts  == null) return 'Invalid recipients data.';
 
-        $payload = $this->payload($this->recipients, $message, $prefix);
+        if ($message != null) {
+            $msg = $message;
+        } else {
+            $msg = $this->message;
+        }
+
+        if ($msg == null) return 'Message is required.';
+
+        $payload = $this->payload($this->recipients, $msg, $prefix);
         // print_r($payload);exit;
 
         return $this->request($payload);
