@@ -30,7 +30,7 @@ class Sms
     private function payload($recipients, $message)
     {
         return [
-            'from' => config('laravel-sdk.sms.from'),
+            'from' => config('wasiliana.sms.from'),
             'message_uid' => $this->uniqueId('outbox'),
             'recipients' => $recipients,
             'message' => $message

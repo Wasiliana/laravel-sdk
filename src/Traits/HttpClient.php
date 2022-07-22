@@ -7,24 +7,16 @@ use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\Exception\TooManyRedirectsException;
-use Wasiliana\LaravelSdk\LaravelSdk;
 
 trait HttpClient
 {
-
-    protected $sdk;
-
-    public function __construct(LaravelSdk $sdk)
-    {
-        $this->sdk = $sdk;
-    }
 
     private function postRequest($endpoint, $payload)
     {
         $client = new Client([
             'base_uri' => 'https://api.wasiliana.com/api/v1/developer/',
             'headers' => [
-                'apiKey' => config('laravel-sdk.api.key'),
+                'apiKey' => config('wasiliana.api.key'),
                 'Accept' => 'application/json',
                 'Content-Type' => 'application/json',
             ]
