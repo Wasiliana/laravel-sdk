@@ -29,15 +29,16 @@ trait HttpClient
                 return $response->getBody()->getContents();
             }
 
-            return $response->getBody()->getContents();
+            // return $response->getBody()->getContents();
+            return json_decode($response->getBody(), true);
         } catch (ClientException $clientexception) {
-            return $clientexception->getMessage();
+            return ['message' => $clientexception->getMessage(), 'code' => $clientexception->getCode()];
         } catch (ServerException $serverexception) {
-            return $serverexception->getMessage();
+            return ['message' => $serverexception->getMessage(), 'code' => $serverexception->getCode()];
         } catch (ConnectException $connectexception) {
-            return $connectexception->getMessage();
+            return ['message' => $connectexception->getMessage(), 'code' => $connectexception->getCode()];
         } catch (TooManyRedirectsException $toomanyredirectexception) {
-            return $toomanyredirectexception->getMessage();
+            return ['message' => $toomanyredirectexception->getMessage(), 'code' => $toomanyredirectexception->getCode()];
         }
     }
 }
