@@ -76,7 +76,7 @@ class LaravelSdkServiceProvider extends ServiceProvider
         // Publishing the configuration file.
         $this->publishes([
             __DIR__ . '/../config/laravel-sdk.php' => config_path('laravel-sdk.php'),
-        ], 'laravel-sdk.config');
+        ], 'wasiliana');
 
         // Publishing the views.
         /*$this->publishes([
