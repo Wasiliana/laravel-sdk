@@ -94,7 +94,7 @@ class Sms
 
         if ($msg == null) return 'Message is required.';
 
-        $payload = $this->payload($this->recipients, $msg, $prefix);
+        $payload = $this->payload($contacts, $msg, $prefix);
 
         return $this->request($payload);
     }
