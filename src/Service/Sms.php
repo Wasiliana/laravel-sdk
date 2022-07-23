@@ -10,7 +10,6 @@ class Sms
 
     use HttpClient, ConversationId;
 
-
     protected $recipients;
 
     protected $message;
@@ -50,17 +49,18 @@ class Sms
         ];
     }
 
-    private function request($payload)
-    {
-        return $this->postRequest('sms/bulk/send/sms/request', $payload);
-    }
-
+    /**
+     * Phone numbers to receive messsage. Can be string for one number or array for multiple
+     */
     public function recipients($recipients)
     {
         $this->recipients = $this->checkRecipients($recipients);
         return $this;
     }
 
+    /**
+     * Message to send to recipients
+     */
     public function message($message)
     {
         $this->message = $message;
@@ -95,8 +95,15 @@ class Sms
         if ($msg == null) return 'Message is required.';
 
         $payload = $this->payload($this->recipients, $msg, $prefix);
-        // print_r($payload);exit;
 
         return $this->request($payload);
+    }
+
+    /**
+     * Make http request to Wasiliana Api
+     */
+    private function request($payload)
+    {
+        return $this->postRequest('sms/bulk/send/sms/request', $payload);
     }
 }
