@@ -34,12 +34,13 @@ use Wasiliana\LaravelSdk\Facades\Sms;
 
 # In your Controller.
 $response = Sms::message('This cold...Mayoooo!!!')
+    ->from('WASILIANA')
     ->to('Number 1')
     ->prefix('test')
     ->send();
 
 #OR...
-$response = Sms::send(['Number 1', 'Number 2'],'This cold...Mayoooo!!!', 'test');
+$response = Sms::send('WASILIANA', ['Number 1', 'Number 2'],'This cold...Mayoooo!!!', 'test');
 
 
 ```
