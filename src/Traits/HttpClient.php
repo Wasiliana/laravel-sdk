@@ -26,11 +26,12 @@ trait HttpClient
             $response = $client->request('POST', $endpoint, ['json' => $payload]);
 
             if ((int)$response->getStatusCode() != 200) {
-                return $response->getBody()->getContents();
+                return json_decode($response->getBody(), true);
             }
 
-            // return $response->getBody()->getContents();
-            return json_decode($response->getBody(), true);
+            $body = json_decode($response->getBody(), true);
+
+            return array_merge($body, ['message_uid' => $payload['message_uid']]);
         } catch (ClientException $clientexception) {
             return ['message' => $clientexception->getMessage(), 'code' => $clientexception->getCode()];
         } catch (ServerException $serverexception) {
