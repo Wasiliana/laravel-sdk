@@ -25,24 +25,22 @@ $ composer require wasiliana/laravel-sdk
 :fire: Usage
 ------------
 
-In your code just use it like this.
+In your code use it like this.
 
 ```php
 # import
 use Wasiliana\LaravelSdk\Facades\Sms;
 
 
-# In your Controller.
+# Option 1
 $response = Sms::message('This cold...Mayoooo!!!')
     ->from('SENDER123') // if this value is not set, default "WASILIANA" is used as sender
     ->to('Number 1') // use an array for multiple recipients
     ->prefix('test') // used in generation of message_uid
     ->send(); // fire request
 
-#OR...
+# Option 2
 $response = Sms::send('WASILIANA', ['Number 1', 'Number 2'],'This cold...Mayoooo!!!', 'test');
-
-
 ```
 
 :gear: Configuration
