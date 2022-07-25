@@ -15,14 +15,15 @@
 
 This package provides access to Wasiliana REST Api and simplifies calling of different methods.
 
-Installation
+:smiley: Installation
 ------------
 
 ```bash
 $ composer require wasiliana/laravel-sdk
 ```
 
-## :fire: Usage
+:fire: Usage
+------------
 
 In your code just use it like this.
 
@@ -57,26 +58,6 @@ Then update `config/wasiliana.php` with your Api Key generated from the account 
 ```dotenv
 WASILIANA_API_KEY=api_key
 ```
-
-
-## Testing
-
-```bash
-$ composer test
-```
-
-## Contributing
-
-Please see [contributing.md](contributing.md) for details and a todolist.
-
-## Security
-
-If you discover any security related issues, please email engineering@wasiliana.com instead of using the issue tracker.
-
-## Credits
-
-- [Wasiliana Engineering Team][link-author]
-- [All Contributors][link-contributors]
 
 ## License
 
