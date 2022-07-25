@@ -34,10 +34,10 @@ use Wasiliana\LaravelSdk\Facades\Sms;
 
 # In your Controller.
 $response = Sms::message('This cold...Mayoooo!!!')
-    ->from('WASILIANA')
-    ->to('Number 1')
-    ->prefix('test')
-    ->send();
+    ->from('SENDER123') // if value is not passed default "WASILIANA" is used as sender
+    ->to('Number 1') // pass an array for multiple numbers
+    ->prefix('test') // used in generation of message_uid
+    ->send(); // fire request
 
 #OR...
 $response = Sms::send('WASILIANA', ['Number 1', 'Number 2'],'This cold...Mayoooo!!!', 'test');
