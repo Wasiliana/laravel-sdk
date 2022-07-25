@@ -2,6 +2,7 @@
 
 namespace Wasiliana\LaravelSdk\Service;
 
+use Illuminate\Support\Arr;
 use Wasiliana\LaravelSdk\Traits\ConversationId;
 use Wasiliana\LaravelSdk\Traits\HttpClient;
 
@@ -10,7 +11,9 @@ class Sms
 
     use HttpClient, ConversationId;
 
-    protected $recipients;
+    protected $from;
+
+    protected $to;
 
     protected $message;
 
@@ -25,7 +28,7 @@ class Sms
         $type = gettype($recipients);
 
         if ($type === 'string') {
-            return [$recipients];
+            return Arr::wrap($recipients);
         } elseif ($type === 'array') {
             return $recipients;
         } else {
@@ -33,10 +36,10 @@ class Sms
         }
     }
 
-    private function payload($recipients, $message, $prefix = null)
+    private function payload($sender, $to, $message, $prefix = null)
     {
         return [
-            'from' => config('wasiliana.sms.from'),
+            'from' => $sender,
             'message_uid' => $prefix == null && $this->prefix == null ? $this->uniqueId() : call_user_func(function () use ($prefix) {
                 if ($prefix != null) {
                     return $this->uniqueId($prefix);
@@ -44,17 +47,26 @@ class Sms
                     return $this->uniqueId($this->prefix);
                 }
             }),
-            'recipients' => $recipients,
+            'recipients' => $to,
             'message' => $message
         ];
     }
 
     /**
+     * Set the Sender ID or leave it blank to use default "WASILIANA"
+     */
+    public function from($from)
+    {
+        $this->from = $from ? $from : 'WASILIANA';
+        return $this;
+    }
+
+    /**
      * Phone numbers to receive messsage. Can be string for one number or array for multiple
      */
-    public function recipients($recipients)
+    public function to($to)
     {
-        $this->recipients = $this->checkRecipients($recipients);
+        $this->to = $this->checkRecipients($to);
         return $this;
     }
 
@@ -76,12 +88,18 @@ class Sms
         return $this;
     }
 
-    public function send($recipients = null, $message = null,  $prefix = null)
+    public function send($from = null, $to = null, $message = null,  $prefix = null)
     {
-        if ($recipients != null) {
-            $contacts = $this->recipients($recipients);
+        if ($from != null) {
+            $sender = $from;
         } else {
-            $contacts = $this->recipients;
+            $sender = $this->from;
+        }
+
+        if ($to != null) {
+            $contacts = $this->checkRecipients($to);
+        } else {
+            $contacts = $this->to;
         }
 
         if ($contacts  == null) return 'Invalid recipients data.';
@@ -94,16 +112,8 @@ class Sms
 
         if ($msg == null) return 'Message is required.';
 
-        $payload = $this->payload($contacts, $msg, $prefix);
+        $payload = $this->payload($sender, $contacts, $msg, $prefix);
 
-        return $this->request($payload);
-    }
-
-    /**
-     * Make http request to Wasiliana Api
-     */
-    private function request($payload)
-    {
         return $this->postRequest('sms/bulk/send/sms/request', $payload);
     }
 }
