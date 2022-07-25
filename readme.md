@@ -43,7 +43,7 @@ $response = Sms::send(['Number 1', 'Number 2'],'This cold...Mayoooo!!!', 'test')
 
 ```
 
-Configuration
+:gear: Configuration
 -------------
 
 You can use `artisan vendor:publish` to copy the distribution configuration file to your app's config directory:
