@@ -4,6 +4,7 @@ namespace Wasiliana\LaravelSdk;
 
 use GuzzleHttp\Client;
 use Illuminate\Support\ServiceProvider;
+use Wasiliana\LaravelSdk\Console\InstallPackage;
 use Wasiliana\LaravelSdk\Service\Sms;
 
 class LaravelSdkServiceProvider extends ServiceProvider
@@ -76,7 +77,7 @@ class LaravelSdkServiceProvider extends ServiceProvider
         // Publishing the configuration file.
         $this->publishes([
             __DIR__ . '/../config/wasiliana.php' => config_path('wasiliana.php'),
-        ], 'wasiliana');
+        ], 'config');
 
         // Publishing the views.
         /*$this->publishes([
@@ -94,6 +95,8 @@ class LaravelSdkServiceProvider extends ServiceProvider
         ], 'laravel-sdk.views');*/
 
         // Registering package commands.
-        // $this->commands([]);
+        $this->commands([
+            InstallPackage::class,
+        ]);
     }
 }
