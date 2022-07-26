@@ -46,10 +46,10 @@ $response = Sms::send('WASILIANA', ['Number 1', 'Number 2'],'This cold...Mayoooo
 :gear: Configuration
 -------------
 
-You can use `artisan vendor:publish` to copy the distribution configuration file to your app's config directory:
+You can use `php artisan wasiliana:install` to copy the distribution configuration file to your app's config directory:
 
 ```bash
-php artisan vendor:publish --provider="Wasiliana\LaravelSdk\LaravelSdkServiceProvider" --tag="wasiliana"
+php artisan wasiliana:install
 ```
 
 Then update `config/wasiliana.php` with your Api Key generated from the account dashboard. Alternatively, you can update your `.env` file with the following:
