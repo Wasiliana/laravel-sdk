@@ -88,7 +88,15 @@ class Sms
         return $this;
     }
 
-    public function send($from = null, $to = null, $message = null,  $prefix = null)
+    /**
+     * 
+     * @param string|null        $from
+     * @param string|array||null $to
+     * @param string|null        $message
+     * @param string|null        $prefix
+     * 
+     */
+    public function send($from = null, $to = null, $message = null, $prefix = null)
     {
         if ($from != null) {
             $sender = $from;
