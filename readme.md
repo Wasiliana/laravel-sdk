@@ -32,7 +32,7 @@ use Wasiliana\LaravelSdk\Facades\Sms;
 
 # Option 1
 $response = Sms::message('This cold...Mayoooo!!!')
-    ->from('SENDER123') // if this value is not set, default "WASILIANA" is used as sender (optional)
+    ->from('SENDER123') // specify the Sender ID (optional)
     ->to('Number 1') // use an array for multiple recipients
     ->prefix('test') // used in generation of message_uid (optional)
     ->dispatch(); // fire request
@@ -48,11 +48,21 @@ $response = Sms::message('This cold...Mayoooo!!!')
     ->to('254723384144')
     ->dispatch();
 
-# Option 4
+
+# Option 4 e.g. send an otp
+$response = Sms::message(sprintf('Your tan code is %d. It will be active for the next 02:00  minutes', mt_rand(100000,999999)))
+    ->to('254723384144')
+    ->isOtp(true)
+    ->dispatch();
+
+# Option 5
 $response = Sms::send('WASILIANA', ['Number 1', 'Number 2'],'This cold...Mayoooo!!!', 'test');
+
+# Option 6
+$response = Sms::send('WASILIANA', ['Number 1', 'Number 2'],'This cold...Mayoooo!!!');
 ```
 
-***NB:*** If `from` and `prefix` values are not set, the default in config file will be used.
+**_NB:_** If `from` and `prefix` values are not set, the default in config file will be used.
 
 ## :gear: Configuration
 
@@ -77,7 +87,6 @@ return [
 ```
 
 Update your `.env` file with the Api Key.\
-
 
 ```dotenv
 WASILIANA_API_KEY=api_key
