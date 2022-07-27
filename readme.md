@@ -40,25 +40,25 @@ $response = Sms::message('This cold...Mayoooo!!!')
 # Option 2
 $response = Sms::message('This cold...Mayoooo!!!')
     ->from('WASILIANA')
-    ->to('254723384144')
+    ->to('Number 1')
     ->dispatch();
 
 # Option 3
 $response = Sms::message('This cold...Mayoooo!!!')
-    ->to('254723384144')
+    ->to('Number 1')
     ->dispatch();
 
 
 # Option 4 e.g. send an otp
 $response = Sms::message(sprintf('Your tan code is %d. It will be active for the next 02:00  minutes', mt_rand(100000,999999)))
-    ->to('254723384144')
+    ->to('Number 1')
     ->isOtp(true)
     ->dispatch();
 
-# Option 5
+# Option 5 (with message_uid prefix)
 $response = Sms::send('WASILIANA', ['Number 1', 'Number 2'],'This cold...Mayoooo!!!', 'test');
 
-# Option 6
+# Option 6 (without message_uid prefix)
 $response = Sms::send('WASILIANA', ['Number 1', 'Number 2'],'This cold...Mayoooo!!!');
 ```
 
