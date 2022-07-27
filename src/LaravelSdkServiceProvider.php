@@ -36,22 +36,6 @@ class LaravelSdkServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/wasiliana.php', 'wasiliana');
 
-        // Register the service the package provides.
-        // $this->app->singleton(LaravelSdk::class, function ($app) {
-        //     return new LaravelSdk(new Client([
-        //         'base_uri' => 'https://api.wasiliana.com/api/v1/developer/',
-        //         'headers' => [
-        //             'apiKey' => config('laravel-sdk.api.key'),
-        //             'Accept' => 'application/json',
-        //             'Content-Type' => 'application/json',
-        //         ]
-        //     ]));
-        // });
-
-        // $this->app->singleton(LaravelSdk::class, function ($app) {
-        //     return new LaravelSdk(new Client);
-        // });
-
         $this->app->bind('ws_sms', function ($app) {
             return new Sms();
         });
