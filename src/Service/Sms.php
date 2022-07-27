@@ -13,6 +13,8 @@ class Sms
 
     use HttpClient, ConversationId;
 
+    
+
     private $from;
 
     private $to;
@@ -32,6 +34,10 @@ class Sms
         $this->isOtp = false;
     }
 
+    /**
+     * 
+     * At the very least, recipients and message should be available
+     */
     private function validateNonOptionalValues(array $data)
     {
         return Validator::make($data, [
@@ -46,7 +52,10 @@ class Sms
         ]);
     }
 
-
+    /**
+     * 
+     * Build  body of the http request
+     */
     private function payload($sender, $to, $message, $prefix = null, $isOtp)
     {
         return [
@@ -86,7 +95,7 @@ class Sms
     }
 
     /**
-     * Set custom text that will form part of message_uid. Default is "outbox".
+     * Set custom text that will form part of message_uid. Default is "conversation_id".
      */
     public function prefix($prefix)
     {
@@ -96,7 +105,7 @@ class Sms
 
 
     /**
-     * Is it an Otp
+     * Specify if it is an Otp request
      */
     public function isOtp($isOtp){
         $this->isOtp = $isOtp;
