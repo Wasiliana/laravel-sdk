@@ -2,7 +2,9 @@
 
 namespace Wasiliana\LaravelSdk\Service;
 
+use Exception;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Validator;
 use Wasiliana\LaravelSdk\Traits\ConversationId;
 use Wasiliana\LaravelSdk\Traits\HttpClient;
 
@@ -11,44 +13,48 @@ class Sms
 
     use HttpClient, ConversationId;
 
-    protected $from;
+    private $from;
 
-    protected $to;
+    private $to;
 
-    protected $message;
+    private $message;
 
-    protected $prefix;
+    private $prefix;
+
+    private $isOtp;
 
     public function __construct()
     {
+        $this->from = config('wasiliana.sms.from');
+        $this->to = null;
+        $this->message = null;
+        $this->prefix = config('wasiliana.sms.prefix');
+        $this->isOtp = false;
     }
 
-    private function checkRecipients($recipients)
+    private function validateNonOptionalValues(array $data)
     {
-        $type = gettype($recipients);
-
-        if ($type === 'string') {
-            return Arr::wrap($recipients);
-        } elseif ($type === 'array') {
-            return $recipients;
-        } else {
-            return null;
-        }
+        return Validator::make($data, [
+            'recipients' => [
+                function ($attribute, $value, $fail) {
+                    if (!is_string($value) && !is_array($value)) {
+                        $fail(':attribute data type is invalid.');
+                    }
+                },
+            ],
+            'message' => 'required',
+        ]);
     }
 
-    private function payload($sender, $to, $message, $prefix = null)
+
+    private function payload($sender, $to, $message, $prefix = null, $isOtp)
     {
         return [
             'from' => $sender,
-            'message_uid' => $prefix == null && $this->prefix == null ? $this->uniqueId() : call_user_func(function () use ($prefix) {
-                if ($prefix != null) {
-                    return $this->uniqueId($prefix);
-                } else {
-                    return $this->uniqueId($this->prefix);
-                }
-            }),
-            'recipients' => $to,
-            'message' => $message
+            'message_uid' => $this->uniqueId($prefix),
+            'recipients' => is_array($to) ? $to : [$to],
+            'message' => $message,
+            'is_otp' => $isOtp
         ];
     }
 
@@ -57,7 +63,7 @@ class Sms
      */
     public function from($from)
     {
-        $this->from = $from ? $from : 'WASILIANA';
+        $this->from = $from;
         return $this;
     }
 
@@ -66,7 +72,7 @@ class Sms
      */
     public function to($to)
     {
-        $this->to = $this->checkRecipients($to);
+        $this->to = $to;
         return $this;
     }
 
@@ -88,6 +94,34 @@ class Sms
         return $this;
     }
 
+
+    /**
+     * Is it an Otp
+     */
+    public function isOtp($isOtp){
+        $this->isOtp = $isOtp;
+        return $this;
+    }
+
+    /**
+     * Fire the request
+     */
+    public function dispatch()
+    {
+        $validator = $this->validateNonOptionalValues([
+            'recipients' => $this->to,
+            'message' => $this->message,
+        ]);
+
+        if ($validator->fails()) {
+            return $validator->errors()->getMessages();
+        }
+
+        $payload = $this->payload($this->from, $this->to, $this->message, $this->prefix, $this->isOtp);
+
+        return $this->postRequest('sms/bulk/send/sms/request', $payload);
+    }
+
     /**
      * 
      * @param string|null        $from
@@ -96,31 +130,18 @@ class Sms
      * @param string|null        $prefix
      * 
      */
-    public function send($from = null, $to = null, $message = null, $prefix = null)
+    public function send(string $from, $to, string $message, string $prefix = null)
     {
-        if ($from != null) {
-            $sender = $from;
-        } else {
-            $sender = $this->from;
+        $validator = $this->validateNonOptionalValues([
+            'recipients' => $to,
+            'message' => $message,
+        ]);
+
+        if ($validator->fails()) {
+            return $validator->errors()->getMessages();
         }
 
-        if ($to != null) {
-            $contacts = $this->checkRecipients($to);
-        } else {
-            $contacts = $this->to;
-        }
-
-        if ($contacts  == null) return 'Invalid recipients data.';
-
-        if ($message != null) {
-            $msg = $message;
-        } else {
-            $msg = $this->message;
-        }
-
-        if ($msg == null) return 'Message is required.';
-
-        $payload = $this->payload($sender, $contacts, $msg, $prefix);
+        $payload = $this->payload($from, $this->to, $message, $prefix, $this->isOtp);
 
         return $this->postRequest('sms/bulk/send/sms/request', $payload);
     }
