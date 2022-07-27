@@ -15,15 +15,13 @@
 
 This package provides access to Wasiliana REST Api and simplifies calling of different methods.
 
-:smiley: Installation
-------------
+## :smiley: Installation
 
 ```bash
 $ composer require wasiliana/laravel-sdk
 ```
 
-:fire: Usage
-------------
+## :fire: Usage
 
 In your code use it like this.
 
@@ -34,17 +32,29 @@ use Wasiliana\LaravelSdk\Facades\Sms;
 
 # Option 1
 $response = Sms::message('This cold...Mayoooo!!!')
-    ->from('SENDER123') // if this value is not set, default "WASILIANA" is used as sender
+    ->from('SENDER123') // if this value is not set, default "WASILIANA" is used as sender (optional)
     ->to('Number 1') // use an array for multiple recipients
-    ->prefix('test') // used in generation of message_uid
-    ->send(); // fire request
+    ->prefix('test') // used in generation of message_uid (optional)
+    ->dispatch(); // fire request
 
 # Option 2
+$response = Sms::message('This cold...Mayoooo!!!')
+    ->from('WASILIANA')
+    ->to('254723384144')
+    ->dispatch();
+
+# Option 3
+$response = Sms::message('This cold...Mayoooo!!!')
+    ->to('254723384144')
+    ->dispatch();
+
+# Option 4
 $response = Sms::send('WASILIANA', ['Number 1', 'Number 2'],'This cold...Mayoooo!!!', 'test');
 ```
 
-:gear: Configuration
--------------
+***NB:*** If `from` and `prefix` values are not set, the default in config file will be used.
+
+## :gear: Configuration
 
 You can use `php artisan wasiliana:install` to copy the distribution configuration file to your app's config directory:
 
@@ -52,7 +62,22 @@ You can use `php artisan wasiliana:install` to copy the distribution configurati
 php artisan wasiliana:install
 ```
 
-Then update `config/wasiliana.php` with your Api Key generated from the account dashboard. Alternatively, you can update your `.env` file with the following:
+These are the settings available in config file published
+
+```bash
+return [
+    'api' => [
+        'key' => env('WASILIANA_API_KEY')
+    ],
+    'sms' => [
+        'prefix' => 'conversation_id',
+        'from' => env('WASILIANA_SENDER_ID', 'WASILIANA')
+    ]
+];
+```
+
+Update your `.env` file with the Api Key.\
+
 
 ```dotenv
 WASILIANA_API_KEY=api_key
