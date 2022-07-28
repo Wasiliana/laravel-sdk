@@ -86,7 +86,7 @@ return [
 ];
 ```
 
-Update your `.env` file with the Api Key.\
+Update your `.env` file with the Api Key;
 
 ```dotenv
 WASILIANA_API_KEY=api_key
