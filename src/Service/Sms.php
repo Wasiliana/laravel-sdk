@@ -2,8 +2,7 @@
 
 namespace Wasiliana\LaravelSdk\Service;
 
-use Exception;
-use Illuminate\Support\Arr;
+
 use Illuminate\Support\Facades\Validator;
 use Wasiliana\LaravelSdk\Traits\ConversationId;
 use Wasiliana\LaravelSdk\Traits\HttpClient;
@@ -13,16 +12,30 @@ class Sms
 
     use HttpClient, ConversationId;
 
-    
 
+    /**
+     * @param string
+     */
     private $from;
 
+    /**
+     * @param string|array
+     */
     private $to;
 
+    /**
+     * @param string
+     */
     private $message;
 
+    /**
+     * @param string
+     */
     private $prefix;
 
+    /**
+     * @param bool
+     */
     private $isOtp;
 
     public function __construct()
@@ -38,7 +51,7 @@ class Sms
      * 
      * At the very least, recipients and message should be available
      */
-    private function validateNonOptionalValues(array $data)
+    private function validate(array $data)
     {
         return Validator::make($data, [
             'recipients' => [
@@ -107,7 +120,8 @@ class Sms
     /**
      * Specify if it is an Otp request
      */
-    public function isOtp($isOtp){
+    public function isOtp($isOtp)
+    {
         $this->isOtp = $isOtp;
         return $this;
     }
@@ -117,7 +131,7 @@ class Sms
      */
     public function dispatch()
     {
-        $validator = $this->validateNonOptionalValues([
+        $validator = $this->validate([
             'recipients' => $this->to,
             'message' => $this->message,
         ]);
@@ -132,16 +146,11 @@ class Sms
     }
 
     /**
-     * 
-     * @param string|null        $from
-     * @param string|array||null $to
-     * @param string|null        $message
-     * @param string|null        $prefix
-     * 
+     * Make request
      */
     public function send(string $from, $to, string $message, string $prefix = null)
     {
-        $validator = $this->validateNonOptionalValues([
+        $validator = $this->validate([
             'recipients' => $to,
             'message' => $message,
         ]);
