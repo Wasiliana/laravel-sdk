@@ -45,7 +45,7 @@ class InstallPackage extends Command
     {
         $params = [
             '--provider' => "Wasiliana\LaravelSdk\LaravelSdkServiceProvider",
-            '--tag'
+            '--tag' => "config"
         ];
 
         if ($forcePublish === true) {
