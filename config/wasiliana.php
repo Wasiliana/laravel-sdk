@@ -1,9 +1,6 @@
 <?php
 
 return [
-    'api' => [
-        'key' => env('WASILIANA_API_KEY')
-    ],
     'sms' => [
         'service_1' => [
             'name' => 'test',
