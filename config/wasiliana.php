@@ -5,13 +5,10 @@ return [
         'key' => env('WASILIANA_API_KEY')
     ],
     'sms' => [
-        'prefix' => 'conversation_id',
-        'from' => env('WASILIANA_SENDER_ID', 'WASILIANA'),
-        [
-            'name' => 'service_1',
-            'prefix' => 'conversation_id',
-            'from' => env('WASILIANA_SENDER_ID', 'WASILIANA'),
-            'key' => ''
-        ]
+        'service_1' => [
+            'name' => 'test',
+            'from' => env('WASILIANA_SERVICE_1_SENDER_ID', 'WASILIANA'),
+            'key' => env('WASILIANA_SERVICE_1_API_KEY', null)
+        ],
     ]
 ];
