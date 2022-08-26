@@ -16,7 +16,7 @@ trait HttpClient
         $client = new Client([
             'base_uri' => 'https://api.wasiliana.com/api/v1/developer/',
             'headers' => [
-                'apiKey' => config('wasiliana.api.key'),
+                'apiKey' => $payload['key'],
                 'Accept' => 'application/json',
                 'Content-Type' => 'application/json',
             ]
