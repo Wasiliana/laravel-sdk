@@ -6,6 +6,12 @@ return [
     ],
     'sms' => [
         'prefix' => 'conversation_id',
-        'from' => env('WASILIANA_SENDER_ID', 'WASILIANA')
+        'from' => env('WASILIANA_SENDER_ID', 'WASILIANA'),
+        [
+            'name' => 'service_1',
+            'prefix' => 'conversation_id',
+            'from' => env('WASILIANA_SENDER_ID', 'WASILIANA'),
+            'key' => ''
+        ]
     ]
 ];
