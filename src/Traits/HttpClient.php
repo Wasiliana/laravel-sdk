@@ -13,6 +13,7 @@ trait HttpClient
 
     private function postRequest($endpoint, $payload)
     {
+        // print_r($payload);exit;
         $client = new Client([
             'base_uri' => 'https://api.wasiliana.com/api/v1/developer/',
             'headers' => [
@@ -24,7 +25,7 @@ trait HttpClient
 
         try {
             $response = $client->request('POST', $endpoint, ['json' => $payload]);
-            
+
             $body = json_decode($response->getBody(), true);
 
             if ((int)$response->getStatusCode() != 200) {
