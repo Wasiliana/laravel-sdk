@@ -24,12 +24,12 @@ trait HttpClient
 
         try {
             $response = $client->request('POST', $endpoint, ['json' => $payload]);
+            
+            $body = json_decode($response->getBody(), true);
 
             if ((int)$response->getStatusCode() != 200) {
-                return json_decode($response->getBody(), true);
+                return array_merge($body, ['message_uid' => $payload['message_uid']]);
             }
-
-            $body = json_decode($response->getBody(), true);
 
             return array_merge($body, ['message_uid' => $payload['message_uid']]);
         } catch (ClientException $clientexception) {
