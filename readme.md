@@ -13,56 +13,13 @@
 
 ## Introduction
 
-This package provides access to Wasiliana REST Api and simplifies calling of different methods.
+This package is built for Laravel developers to easen interaction with Wasiliana Rest Api.
 
 ## :smiley: Installation
 
 ```bash
 $ composer require wasiliana/laravel-sdk
 ```
-
-## :fire: Usage
-
-In your code use it like this.
-
-```php
-# import
-use Wasiliana\LaravelSdk\Facades\Sms;
-
-
-# Option 1
-$response = Sms::message('This cold...Mayoooo!!!')
-    ->from('SENDER123') // specify the Sender ID (optional)
-    ->to('Number 1') // use an array for multiple recipients
-    ->prefix('test') // used in generation of message_uid (optional)
-    ->dispatch(); // fire request
-
-# Option 2
-$response = Sms::message('This cold...Mayoooo!!!')
-    ->from('WASILIANA')
-    ->to('Number 1')
-    ->dispatch();
-
-# Option 3
-$response = Sms::message('This cold...Mayoooo!!!')
-    ->to('Number 1')
-    ->dispatch();
-
-
-# Option 4 e.g. send an otp
-$response = Sms::message(sprintf('Your tan code is %d. It will be active for the next 02:00  minutes', mt_rand(100000,999999)))
-    ->to('Number 1')
-    ->isOtp(true)
-    ->dispatch();
-
-# Option 5 (with message_uid prefix)
-$response = Sms::send('WASILIANA', ['Number 1', 'Number 2'],'This cold...Mayoooo!!!', 'test');
-
-# Option 6 (without message_uid prefix)
-$response = Sms::send('WASILIANA', ['Number 1', 'Number 2'],'This cold...Mayoooo!!!');
-```
-
-**_NB:_** If `from` and `prefix` values are not set, the default in config file will be used.
 
 ## :gear: Configuration
 
@@ -72,24 +29,87 @@ You can use `php artisan wasiliana:install` to copy the distribution configurati
 php artisan wasiliana:install
 ```
 
-These are the settings available in config file published
+Settings available in config file published.
 
 ```bash
 return [
-    'api' => [
-        'key' => env('WASILIANA_API_KEY')
-    ],
     'sms' => [
-        'prefix' => 'conversation_id',
-        'from' => env('WASILIANA_SENDER_ID', 'WASILIANA')
+        'service_1' => [
+            'name' => 'test',
+            'from' => env('SERVICE_1_SENDER_ID', 'WASILIANA'),
+            'key' => env('SERVICE_1_API_KEY', null)
+        ]
     ]
 ];
 ```
 
-Update your `.env` file with the Api Key;
+In a scenario where you have more than one service; the structure will appear as below.
+
+```bash
+return [
+    'sms' => [
+        'service_1' => [
+            'name' => 'test',
+            'from' => env('SERVICE_1_SENDER_ID', 'WASILIANA'),
+            'key' => env('SERVICE_1_API_KEY', null)
+        ],
+        'service_2' => [
+            'name' => 'test2',
+            'from' => env('SERVICE_2_SENDER_ID', 'WASILIANA'),
+            'key' => env('SERVICE_2_API_KEY', null)
+        ]
+    ]
+];
+```
+
+## :fire: Usage
+
+In your code use it like this.
+
+```php
+
+# import
+use Wasiliana\LaravelSdk\Facades\Sms;
+
+
+# Example 1; using default service configured in wasiliana config file
+$response = Sms::to(['2547XXXXXYYY', '2547XXXXXZZZ']) //use an array for multiple recipients
+    ->message('This cold...Mayoooo!!!') // your message
+    ->dispatch(); // fire request
+
+# OR
+
+$response = Sms::send('2547XXXXXYYY', 'This cold...Mayoooo!!!'); //compose message, add recipients and send
+
+
+# Example 2; using a different service configured in wasiliana config file
+$response = Sms::to('2547XXXXXYYY')
+    ->message('This a test dispatch.')
+    ->service('service_2')
+    ->dispatch();
+
+# OR
+
+$response = Sms::service('service_2')->send(['2547XXXXXYYY', '2547XXXXXZZZ'], 'This a send test using a different service.'); // for multiple recipients use an array
+
+# Example 3; custom message_uid prefix
+$response = Sms::to(['2547XXXXXYYY', '2547XXXXXZZZ'])
+    ->message('This cold...Mayoooo!!!')
+    ->prefix('notification') // custom message_uid prefix 
+    ->dispatch();
+
+# OR
+
+$response = Sms::send('2547XXXXXYYY', 'This cold...Mayoooo!!!', 'notification');
+
+```
+
+
+You can update your `.env` to have the SENDER_ID API_KEY values instead of having them in the config file;
 
 ```dotenv
-WASILIANA_API_KEY=api_key
+SERVICE_1_SENDER_ID=<Sender_Id>
+SERVICE_1_API_KEY=<Api_Key>
 ```
 
 ## License
