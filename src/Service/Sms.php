@@ -190,7 +190,7 @@ class Sms
     /**
      * Make request
      */
-    public function send($to, string $message, string $prefix = null)
+    public function send($to, string $message, string $prefix = 'conversation_id')
     {
         $validator = $this->validate([
             'service' => $this->service,
