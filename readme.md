@@ -64,15 +64,15 @@ return [
 
 ## :fire: Usage
 
-In your code use it like this.
+Import the Sms Facade at the top;
 
 ```php
-
-# import
 use Wasiliana\LaravelSdk\Facades\Sms;
+```
 
+Example 1: Using default service configured in wasiliana config file
 
-# Example 1; using default service configured in wasiliana config file
+```php
 $response = Sms::to(['2547XXXXXYYY', '2547XXXXXZZZ']) //use an array for multiple recipients
     ->message('This cold...Mayoooo!!!') // your message
     ->dispatch(); // fire request
@@ -80,9 +80,11 @@ $response = Sms::to(['2547XXXXXYYY', '2547XXXXXZZZ']) //use an array for multipl
 # OR
 
 $response = Sms::send('2547XXXXXYYY', 'This cold...Mayoooo!!!'); //compose message, add recipients and send
+```
 
+Example 2; using a different service configured in wasiliana config file
 
-# Example 2; using a different service configured in wasiliana config file
+```php
 $response = Sms::to('2547XXXXXYYY')
     ->message('This a test dispatch.')
     ->service('service_2')
@@ -91,8 +93,11 @@ $response = Sms::to('2547XXXXXYYY')
 # OR
 
 $response = Sms::service('service_2')->send(['2547XXXXXYYY', '2547XXXXXZZZ'], 'This a send test using a different service.'); // for multiple recipients use an array
+```
 
-# Example 3; custom message_uid prefix
+Example 3; custom message_uid prefix
+
+```php
 $response = Sms::to(['2547XXXXXYYY', '2547XXXXXZZZ'])
     ->message('This cold...Mayoooo!!!')
     ->prefix('notification') // custom message_uid prefix 
@@ -101,11 +106,10 @@ $response = Sms::to(['2547XXXXXYYY', '2547XXXXXZZZ'])
 # OR
 
 $response = Sms::send('2547XXXXXYYY', 'This cold...Mayoooo!!!', 'notification');
-
 ```
 
-
-You can update your `.env` to have the SENDER_ID API_KEY values instead of having them in the config file;
+## Environment variables
+You can update your `.env` to have the SENDER_ID and API_KEY values instead of having them in the config file;
 
 ```dotenv
 SERVICE_1_SENDER_ID=<Sender_Id>
