@@ -35,7 +35,8 @@
                 "Wasiliana\\LaravelSdk\\LaravelSdkServiceProvider"
             ],
             "aliases": {
-                "Sms": "Wasiliana\\LaravelSdk\\Facades\\Sms"
+                "Sms": "Wasiliana\\LaravelSdk\\Facades\\Sms",
+                "Airtime": "Wasiliana\\LaravelSdk\\Facades\\Airtime"
             }
         }
     }
