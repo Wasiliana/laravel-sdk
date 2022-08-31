@@ -84,7 +84,7 @@ class Airtime
         $payload = $this->airtime($validator->validated());
 
         try {
-            $response = $this->makeRequest('airtime/request', $payload);
+            $response = $this->makeRequest2('airtime/request', $payload);
 
             return json_decode($response->getBody(), true);
         } catch (RequestException $exception) {
