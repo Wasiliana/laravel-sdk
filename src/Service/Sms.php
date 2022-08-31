@@ -2,105 +2,73 @@
 
 namespace Wasiliana\LaravelSdk\Service;
 
+use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Validator;
 use Wasiliana\LaravelSdk\Traits\ConversationId;
 use Wasiliana\LaravelSdk\Traits\HttpClient;
+use Wasiliana\LaravelSdk\Traits\Payload;
+use Wasiliana\LaravelSdk\Traits\Validates;
 
 class Sms
 {
 
-    use HttpClient, ConversationId;
+    use HttpClient, ConversationId, Validates, Payload;
 
     /**
-     * @param string|array
-     */
-    private $service;
-
-    /**
-     * @param string
-     */
-    private $from;
-
-    /**
+     * recipients
+     * 
      * @param string|array
      */
     private $to;
 
     /**
+     * message
+     * 
      * @param string
      */
     private $message;
 
     /**
+     * service to use
+     * 
+     * @param string
+     */
+    private $service;
+
+    /**
+     * prefix
+     * 
      * @param string
      */
     private $prefix;
 
     /**
+     * true or false
+     * 
      * @param bool
      */
-    private $isOtp;
-
-    public function __construct()
-    {
-        $this->service = config('wasiliana.sms.service_1');
-        $this->from = 'WASILIANA';
-        $this->to = null;
-        $this->message = null;
-        $this->prefix = 'conversation_id';
-        $this->isOtp = false;
-    }
+    private $isOtp = false;
 
     /**
-     * 
-     * At the very least, recipients and message should be available
+     * Set recipients
      */
-    private function validate(array $data)
+    public function to($to)
     {
-        return Validator::make(
-            $data,
-            [
-                // 'service'  => 'filled',
-                'service'  => 'required|array|min:2',
-                'service.name'  => 'required',
-                'service.from'  => 'required',
-                'service.key'  => 'required',
-                'recipients' => [
-                    function ($attribute, $value, $fail) {
-                        if (!is_string($value) && !is_array($value)) {
-                            $fail(':attribute data type is invalid.');
-                        }
-                    },
-                ],
-                'message' => 'required',
-            ],
-            [
-                'service.min' => 'The service array must have at least 2 items.',
-                'service.name.required' => 'Service name is required.',
-                'service.key.required' => 'Api key is required.'
-            ]
-        );
+        $this->to = $to;
+        return $this;
     }
 
     /**
-     * 
-     * Build  body of the http request
+     * Set message body
      */
-    private function payload($sender, $to, $message, $key, $prefix = null, $isOtp)
+    public function message($message)
     {
-        return [
-            'from' => $sender,
-            'recipients' => is_array($to) ? $to : [$to],
-            'message' => $message,
-            'key' => $key,
-            'message_uid' => $this->uniqueId($prefix),
-            'is_otp' => $isOtp
-        ];
+        $this->message = $message;
+        return $this;
     }
 
     /**
-     * service name defined in wasiliana config file. Default is 'service_1'
+     * Set service
      */
     public function service($service)
     {
@@ -113,97 +81,80 @@ class Sms
     }
 
     /**
-     * Set the Sender ID or leave it blank to use default "WASILIANA"
-     */
-    // public function from($from)
-    // {
-    //     $this->from = $from;
-    //     return $this;
-    // }
-
-    /**
-     * Phone numbers to receive messsage. Can be string for one number or array for multiple
-     */
-    public function to($to)
-    {
-        $this->to = $to;
-        return $this;
-    }
-
-    /**
-     * Message to send to recipients
-     */
-    public function message($message)
-    {
-        $this->message = $message;
-        return $this;
-    }
-
-    /**
-     * Set custom text that will form part of message_uid. Default is "conversation_id".
+     * Set prefix to be appended to message_uuid
      */
     public function prefix($prefix)
     {
-        $this->prefix = $prefix;
+        $this->prefix = $this->uniqueId($prefix);
         return $this;
     }
 
 
     /**
-     * Specify if it is an Otp request
+     * Set true or false
      */
     public function isOtp($isOtp)
     {
-        $this->isOtp = $isOtp;
+        $this->isOtp = $isOtp ?: false;
         return $this;
     }
 
     /**
-     * Fire the request
+     * Dispatch the request
      */
-    public function dispatch()
+    public function send($to = null, string $message = null, string  $service = 'service_1', string $prefix = 'conversation_id')
     {
-        // $validator = $this->validate([
-        //     'recipients' => $this->to,
-        //     'message' => $this->message,
-        // ]);
-        // echo $this->service;exit;
-        // print_r($this->service);exit;
+        $service = ($this->service && count($this->service)) > 0 ? null : $service;
+        $prefix = $this->prefix ?: $prefix;
 
-        $validator = $this->validate([
-            'service' => $this->service,
+        $this->set($to, $message, $service, $prefix, $this->isOtp);
+
+        $validator = $this->validateSms([
             'recipients' => $this->to,
             'message' => $this->message,
+            'service' => $this->service,
+            'prefix' => $this->prefix,
+            'isOtp' => $this->isOtp
         ]);
 
         if ($validator->fails()) {
             return ['status' => 'error', 'data' => Arr::flatten($validator->errors()->getMessages())];
         }
 
-        // $this->from = $this->service['from'];
+        $payload = $this->sms($validator->validated());
+      
+        try {
+            $response = $this->makeRequest('sms/bulk/send/sms/request', $payload);
 
-        $payload = $this->payload($this->service['from'], $this->to, $this->message, $this->service['key'], $this->prefix, $this->isOtp);
+            $body = json_decode($response->getBody(), true);
 
-        return $this->postRequest('sms/bulk/send/sms/request', $payload);
+            if ((int)$response->getStatusCode() != 200) {
+                return array_merge($body, ['message_uid' => $payload['message_uid']]);
+            }
+
+            return array_merge($body, ['message_uid' => $payload['message_uid']]);
+        } catch (RequestException $exception) {
+            return array_merge(['status' => 'error'], json_decode($exception->getResponse()->getBody(), true));
+        }
     }
 
     /**
-     * Make request
+     * Call the set functions with values
      */
-    public function send($to, string $message, string $prefix = 'conversation_id')
+    private function set($to, $message, $service, $prefix, $isOtp)
     {
-        $validator = $this->validate([
-            'service' => $this->service,
-            'recipients' => $to,
-            'message' => $message,
-        ]);
+        $map = [
+            'to' => 'to',
+            'message' => 'message',
+            'service' => 'service',
+            'prefix' => 'prefix',
+            'isOtp' => 'isOtp',
+        ];
 
-        if ($validator->fails()) {
-            return ['status' => 'error', 'data' => Arr::flatten($validator->errors()->getMessages())];
+        foreach ($map as $var => $method) {
+            if (${$var}) {
+                call_user_func([$this, $method], ${$var});
+            }
         }
-
-        $payload = $this->payload($this->service['from'], $to, $message, $this->service['key'], $prefix, $this->isOtp);
-
-        return $this->postRequest('sms/bulk/send/sms/request', $payload);
     }
 }
