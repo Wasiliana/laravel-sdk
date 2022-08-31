@@ -15,4 +15,13 @@ trait Payload
             'is_otp' => $data['isOtp']
         ];
     }
+
+    protected function airtime(array $data)
+    {
+        return [
+            'key' => $data['service']['key'],
+            'amount' => $data['amount'],
+            'phone_number' => $data['phone']
+        ];
+    }
 }
