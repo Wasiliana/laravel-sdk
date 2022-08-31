@@ -5,6 +5,8 @@ namespace Wasiliana\LaravelSdk;
 use GuzzleHttp\Client;
 use Illuminate\Support\ServiceProvider;
 use Wasiliana\LaravelSdk\Console\InstallPackage;
+use Wasiliana\LaravelSdk\Http\CoreClient;
+use Wasiliana\LaravelSdk\Service\Airtime;
 use Wasiliana\LaravelSdk\Service\Sms;
 
 class LaravelSdkServiceProvider extends ServiceProvider
@@ -36,9 +38,11 @@ class LaravelSdkServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/wasiliana.php', 'wasiliana');
 
-        $this->app->bind('ws_sms', function ($app) {
-            return new Sms();
+        $this->app->singleton(CoreClient::class, function ($app) {
+            return new CoreClient(new Client(['base_uri' => 'https://api.wasiliana.com/api/v1/developer/']));
         });
+
+        $this->registerFacades();
     }
 
     /**
@@ -82,5 +86,16 @@ class LaravelSdkServiceProvider extends ServiceProvider
         $this->commands([
             InstallPackage::class,
         ]);
+    }
+
+    private function registerFacades()
+    {
+        $this->app->bind('ws_sms', function () {
+            return $this->app->make(Sms::class);
+        });
+
+        $this->app->bind('ws_airtime', function () {
+            return $this->app->make(Airtime::class);
+        });
     }
 }
