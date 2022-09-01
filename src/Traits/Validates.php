@@ -42,7 +42,7 @@ trait Validates
                 'service'  => 'required|array',
                 'service.name'  => 'required',
                 'service.key'  => 'required',
-                'amount'  => 'required|integer|min:5|max:1000',
+                'amount'  => 'required|integer|min:10',
                 'phone'  => 'required',
             ],
             [
