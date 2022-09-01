@@ -118,11 +118,11 @@ class Sms
         ]);
 
         if ($validator->fails()) {
-            return ['status' => 'error', 'data' => Arr::flatten($validator->errors()->getMessages())];
+            return ['status' => 'error', 'message' => 'Error in the data provided', 'data' => Arr::flatten($validator->errors()->getMessages())];
         }
 
         $payload = $this->sms($validator->validated());
-      
+
         try {
             $response = $this->makeRequest('sms/bulk/send/sms/request', $payload);
 
