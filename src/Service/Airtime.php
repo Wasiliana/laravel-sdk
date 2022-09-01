@@ -78,7 +78,7 @@ class Airtime
         $validator = $this->validateAirtime(['service' => $this->service, 'amount' => $this->amount, 'phone' => $this->phone]);
 
         if ($validator->fails()) {
-            return ['status' => 'error', 'data' => Arr::flatten($validator->errors()->getMessages())];
+            return ['status' => 'error', 'message' => 'Error in the data provided', 'data' => Arr::flatten($validator->errors()->getMessages())];
         }
 
         $payload = $this->airtime($validator->validated());
