@@ -18,7 +18,7 @@ This package is built for Laravel developers to easen interaction with Wasiliana
 ## :smiley: Installation
 
 ```bash
-$ composer require wasiliana/laravel-sdk
+composer require wasiliana/laravel-sdk
 ```
 
 ## :gear: Configuration
