@@ -48,8 +48,7 @@ trait Validates
             [
                 'service.name.required' => 'Service name is required.',
                 'service.key.required' => 'Service Api key is required.',
-                'amount.min' => 'Airtime amount should not be less than 5.',
-                'amount.max' => 'Airtime amount should not be greater than 1000.',
+                'amount.min' => 'Airtime amount should not be less than 10.',
             ]
         );
     }
