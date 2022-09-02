@@ -21,6 +21,8 @@ This package is built for Laravel developers to easen interaction with Wasiliana
 composer require wasiliana/laravel-sdk
 ```
 
+This command will install the latest version of the package.
+
 ## :gear: Configuration
 
 You can use `php artisan wasiliana:install` to copy the distribution configuration file to your app's config directory:
