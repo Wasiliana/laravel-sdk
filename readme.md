@@ -171,13 +171,20 @@ $response = Airtime::amount(10)->phone('0720XXXYYY')->send();
 ```
 
 #### Example 2: Request
+Send same amount of airtime to multiple numbers at once
+
+```php
+$response = Airtime::amount(10)->->phone(['0723XXXYYY', '0711YYYXXX'])->send();
+```
+
+#### Example 3: Request
 Using a different service configured in wasiliana config file
 
 ```php
 $response = Airtime::amount(10)->phone('0720XXXYYY')->service('service_2')->send();
 ```
 
-#### Example 3: Response
+#### Example 4: Response
 Success and error responses retirned
 
 ```php
@@ -213,9 +220,12 @@ Array
 You can update your `.env` to have the SENDER_ID and API_KEY values instead of having them in the config file;
 
 ```dotenv
-SERVICE_1_SENDER_ID=<Sender_Id>
-SERVICE_1_API_KEY=<Api_Key>
+SMS_SERVICE_1_SENDER_ID=<Sender_Id>
+SMS_SERVICE_1_API_KEY=<Api_Key>
+
+AIRTIME_SERVICE_1_API_KEY=<Api_Key>
 ```
+**NOTE:** You don't have to define a SENDER_ID in the `.env` when you are using the shared `WASILIANA` SENDER_ID
 
 ## License
 
