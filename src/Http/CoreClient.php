@@ -3,12 +3,6 @@
 namespace Wasiliana\LaravelSdk\Http;
 
 use GuzzleHttp\ClientInterface;
-use SmoDav\Mpesa\Auth\Authenticator;
-use SmoDav\Mpesa\Contracts\CacheStore;
-use SmoDav\Mpesa\Contracts\ConfigurationStore;
-use SmoDav\Mpesa\Native\NativeCache;
-use SmoDav\Mpesa\Native\NativeConfig;
-use SmoDav\Mpesa\Repositories\ConfigurationRepository;
 
 class CoreClient
 {
