@@ -106,7 +106,7 @@ Using a different service configured in wasiliana config file
 $response = Sms::to('2547XXXXXYYY')
     ->message('This a test dispatch.')
     ->service('service_2')
-    ->dispatch();
+    ->send();
 
 // OR
 
@@ -120,7 +120,7 @@ Defing a custom message_uid prefix
 $response = Sms::to(['2547XXXXXYYY', '2547XXXXXZZZ'])
     ->message('This cold...Mayoooo!!!')
     ->prefix('notification') // custom message_uid prefix 
-    ->dispatch();
+    ->send();
 
 // OR
 
