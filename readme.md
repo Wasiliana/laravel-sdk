@@ -185,9 +185,8 @@ Success and error responses retirned
 // success response
 Array
 (
-    [message] => You have topped up +254722XXXYYY with Ksh. 100.00
-    [code] => 200
-    [balance] => 1900
+    [status] => success
+    [message] => Ksh. 10 has been toped up sucessfuly
 )
 
 // error response
